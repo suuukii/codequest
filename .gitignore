@@ -4,3 +4,11 @@ dist/
 .expo/
 *.log
 .DS_Store
+.idea/
+supabase/.temp/
+supabase/.branches/
+.env.*
+!.env.example
+*.swp
+*.swo
+supabase/readme
