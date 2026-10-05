@@ -1,4 +1,4 @@
-ximport 'dotenv/config';
+import 'dotenv/config';
 
 function required(name: string): string {
   const value = process.env[name];

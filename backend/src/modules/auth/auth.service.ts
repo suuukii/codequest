@@ -1,4 +1,4 @@
-
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { env } from '../../config/env.js';
 import { supabase } from '../../database/pool.js';
@@ -25,8 +25,9 @@ export async function register(input: { name: string; nickname: string; password
   if (existing) throw new Error('NICKNAME_TAKEN');
   if (existingError) throw existingError;
 
-  const passwordHash = "hash";
+  const passwordHash = await bcrypt.hash(input.password, 12);
   const { data, error } = await supabase
+
     .from('users')
     .insert({ name: input.name, nickname, password_hash: passwordHash })
     .select('id, name, nickname, password_hash')
@@ -39,30 +40,18 @@ export async function register(input: { name: string; nickname: string; password
 }
 
 export async function login(input: { login: string; password: string }) {
-  const loginValue = input.login;
-
-  let { data: user, error } = await supabase
-    .from('users')
-    .select('id, name, nickname, password_hash')
-    .ilike('nickname', loginValue)
-    .limit(1)
-    .maybeSingle();
+  const { data: user, error } = await supabase
+      .from('users')
+      .select('id, name, nickname, password_hash')
+      .eq('nickname', input.login.trim().toLowerCase())
+      .maybeSingle();
 
   if (error) throw error;
 
-  if (!user) {
-    const res = await supabase
-      .from('users')
-      .select('id, name, nickname, password_hash')
-      .ilike('name', loginValue)
-      .limit(1)
-      .maybeSingle();
-    user = res.data as User | null;
-    if (res.error) throw res.error;
-  }
+  const passwordOk = user ? await bcrypt.compare(input.password, user.password_hash) : false;
+  if (!user || !passwordOk) throw new Error('INVALID_CREDENTIALS');
 
-  if (!user) {
-    throw new Error('INVALID_CREDENTIALS');
-  }
   return { user: publicUser(user as User), token: tokenFor(user as User) };
 }
+
+

@@ -7,5 +7,4 @@ CREATE TABLE IF NOT EXISTS users (
   password_hash TEXT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
-
-CREATE INDEX IF NOT EXISTS users_nickname_idx ON users (nickname);
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
