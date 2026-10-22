@@ -1,4 +1,4 @@
-# CodeQuest
+# CodeQuest:
 
 App com cadastro e login, conectado a um banco de dados no Supabase.
 
