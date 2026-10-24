@@ -4,7 +4,19 @@
     "slug": "codequest",
     "version": "1.0.0",
     "orientation": "portrait",
+    "scheme": "codequest",
     "userInterfaceStyle": "dark",
-    "assetBundlePatterns": ["**/*"]
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    },
+    "plugins": ["expo-router"],
+    "experiments": {
+      "typedRoutes": true
+    }
   }
 }
